@@ -1,0 +1,94 @@
+{
+ "canonical": {
+  "before": {
+   "batch_id": "d28bc7d4cf95451ebd9248c33d1ec5b3",
+   "total_cases": 300,
+   "total_at_risk_amount": 6294450.0,
+   "total_recovered_amount": 64691.0,
+   "total_cost": 4800.0,
+   "net_recovered": 59891.0,
+   "recovery_rate": 0.02666666666666667,
+   "baseline_recovery_rate": 0.0
+  },
+  "before_segment": {
+   "segment": "class:insufficient_funds|pfc>=3",
+   "recovered_cases": 0,
+   "recovered_amount": 0.0,
+   "cost": 300.0,
+   "net_recovered": -300.0,
+   "cases": 150,
+   "recovery_rate": 0.0
+  },
+  "after": {
+   "batch_id": "d08fb02ade7b48c986544cd1f45cd4b3",
+   "total_cases": 300,
+   "total_at_risk_amount": 18624450.0,
+   "total_recovered_amount": 5528706.0,
+   "total_cost": 4800.0,
+   "net_recovered": 5523906.0,
+   "recovery_rate": 0.29,
+   "baseline_recovery_rate": 0.0
+  },
+  "after_segment": {
+   "segment": "class:insufficient_funds|pfc>=3",
+   "recovered_cases": 1,
+   "recovered_amount": 82426.0,
+   "cost": 0.0,
+   "net_recovered": 82426.0,
+   "cases": 150,
+   "recovery_rate": 0.0067
+  },
+  "segment_key": "class:insufficient_funds|pfc>=3",
+  "narrative": {
+   "what_happened": "Under the v1 additive logistic-regression scorer, the insufficient_funds | prior_failure_count >= 3 segment \u2014 150 cases \u2014 was treated as recoverable. Outreach cost \u20b9300 on the segment, recovering only 0 case(s) for \u20b90.00. Segment net was \u20b9-300.00, while the overall batch looked healthy at \u20b959,891.00 net recovered.",
+   "how_found": "The problem was invisible in the overall batch metrics. It surfaced only via GET /batches/{id}/segments, where the segment breakdown exposed the insufficient_funds|pfc>=3 row with its negative or near-zero net. Without that per-segment view, the loss (or wasted spend) would have been buried inside a seemingly successful batch.",
+   "what_changed": "Added a deterministic rule in policy_engine.py: for the insufficient_funds and prior_failure_count >= 3 segment, send_message is allowed only when recoverability >= 0.85; otherwise the case is stopped. With that rule on the same segment (150 cases), the system spent \u20b90 and recovered \u20b982,426.00 (\u20b982,426.00 segment net). The scorer itself was deliberately left unchanged."
+  }
+ },
+ "latest": {
+  "before": {
+   "batch_id": "ccf20174dc8f448bae8cc043ee37b91c",
+   "total_cases": 300,
+   "total_at_risk_amount": 648878.24,
+   "total_recovered_amount": 236198.78,
+   "total_cost": 4800.0,
+   "net_recovered": 231398.78,
+   "recovery_rate": 0.27,
+   "baseline_recovery_rate": 0.14666666666666667
+  },
+  "before_segment": {
+   "segment": "class:insufficient_funds|pfc>=3",
+   "recovered_cases": 4,
+   "recovered_amount": 4085.09,
+   "cost": 2100.0,
+   "net_recovered": 1985.09,
+   "cases": 46,
+   "recovery_rate": 0.087
+  },
+  "after": {
+   "batch_id": "dd5c972dde6a439cbb485527321a7ba0",
+   "total_cases": 300,
+   "total_at_risk_amount": 609294.94,
+   "total_recovered_amount": 175135.52,
+   "total_cost": 4800.0,
+   "net_recovered": 170335.52,
+   "recovery_rate": 0.25333333333333335,
+   "baseline_recovery_rate": 0.14
+  },
+  "after_segment": {
+   "segment": "class:insufficient_funds|pfc>=3",
+   "recovered_cases": 0,
+   "recovered_amount": 0.0,
+   "cost": 0.0,
+   "net_recovered": 0.0,
+   "cases": 56,
+   "recovery_rate": 0.0
+  },
+  "segment_key": "class:insufficient_funds|pfc>=3",
+  "narrative": {
+   "what_happened": "Under the v1 additive logistic-regression scorer, the insufficient_funds | prior_failure_count >= 3 segment \u2014 46 cases \u2014 was treated as recoverable. Outreach cost \u20b92,100 on the segment, recovering only 4 case(s) for \u20b94,085.09. Segment net was \u20b91,985.09, while the overall batch looked healthy at \u20b9231,398.78 net recovered.",
+   "how_found": "The problem was invisible in the overall batch metrics. It surfaced only via GET /batches/{id}/segments, where the segment breakdown exposed the insufficient_funds|pfc>=3 row with its negative or near-zero net. Without that per-segment view, the loss (or wasted spend) would have been buried inside a seemingly successful batch.",
+   "what_changed": "Added a deterministic rule in policy_engine.py: for the insufficient_funds and prior_failure_count >= 3 segment, send_message is allowed only when recoverability >= 0.85; otherwise the case is stopped. With that rule on the same segment (56 cases), the system spent \u20b90 and recovered \u20b90.00 (\u20b90.00 segment net). The scorer itself was deliberately left unchanged."
+  }
+ }
+}

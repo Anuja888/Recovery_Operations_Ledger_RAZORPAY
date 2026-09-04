@@ -1,0 +1,32 @@
+version: "3.9"
+
+# Convenience only — normal development runs uvicorn + vite directly.
+# Deliberately NO PostgreSQL / Redis containers: SQLite is sufficient, and
+# idempotency comes from a DB unique constraint rather than a lock service.
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "8010:8000"   # host 8010 -> container 8000 (host 8000 may be occupied)
+    environment:
+      RENEW_LLM_PROVIDER: ${RENEW_LLM_PROVIDER:-mock}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      RENEW_BATCH_BUDGET_CAP: ${RENEW_BATCH_BUDGET_CAP:-5000}
+    volumes:
+      - renew-data:/app/data
+      - renew-models:/app/models
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  renew-data:
+  renew-models:

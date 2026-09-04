@@ -1,0 +1,12 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY app ./app
+
+# Generate synthetic data + train the scorer on first boot so the API is
+# immediately usable; then start the API.
+CMD ["sh", "-c", "python -m app.generate_data --n 500 && python -m app.train_scorer && uvicorn app.main:app --host 0.0.0.0 --port 8000"]

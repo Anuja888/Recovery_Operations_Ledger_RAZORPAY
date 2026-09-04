@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+@theme {
+  /* RENEW palette — ivory workspace + espresso sidebar */
+  --color-paper: #FAF9F6;        /* warm ivory page surface */
+  --color-panel: #FFFFFF;        /* white raised cards */
+  --color-ink: #241F1B;          /* charcoal body text (near-black) */
+  --color-faded: #6F675F;         /* warm gray secondary text */
+  --color-line: #DDD7D0;         /* light warm gray border */
+  --color-line-soft: #EFE9E1;
+  --color-heading: #3A2112;      /* dark brown — main page & section headings */
+  --color-pine: #3F6B4B;         /* muted dark green — positive financial */
+  --color-pine-deep: #21150E;    /* very dark espresso — sidebar */
+  --color-pine-rail-border: #3A271B; /* slightly lighter brown — sidebar dividers */
+  --color-pine-rail-text: #E9DCC9; /* warm white — sidebar text */
+  --color-pine-rail-caramel: #A56A35; /* caramel — sidebar section numbers/active */
+  --color-clay: #7A2A1E;         /* muted dark red — risk / loss */
+  --color-ochre: #A56A35;        /* caramel — attention / accent */
+  --color-ember: #70401F;        /* deep brown — primary CTA + interactive accent */
+  --color-ember-hover: #5A3318;  /* darker brown — CTA hover */
+  --color-rust: #5A2E1B;         /* dark brown — emphasis / outlier */
+  --color-mist: #8B7E70;         /* warm mist */
+
+  /* Sidebar palette — espresso with cream text */
+  --color-rail-bg: #21150E;
+  --color-rail-border: #3A271B;
+  --color-rail-hover: #2D1C12;
+  --color-rail-text: #E9DCC9;       /* default warm white */
+  --color-rail-text-strong: #F4EAD8; /* RENEW brand + active label */
+  --color-rail-text-hint: #D8CEC2;   /* subheadings — light cream */
+  --color-rail-text-hint-active: #E2D8CC; /* slightly brighter cream when active */
+  --color-rail-number: #8B6A4A;     /* inactive nav number */
+  --color-rail-number-active: #C68A52; /* active nav number — caramel */
+  --color-rail-active-border: #A56A35; /* caramel active left border */
+  --color-rail-hover-border: #5A3F2A;  /* inactive hover left border */
+
+  /* Bar / track palette — brown filled bars on light warm gray tracks */
+  --color-bar-track: #E8E2DA;        /* light warm gray track */
+  --color-bar-fill: #70401F;         /* deep brown fill */
+
+  /* Type — serif as ledger identity, sans only for About hero headline */
+  --font-serif: "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --font-sans: "Inter", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+html {
+  font-kerning: normal;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-serif);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* numerals always align in tables & stats */
+.tnum {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* small uppercase label, ledger style — dark brown for emphasis */
+.kicker {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+/* hairline data table */
+.ledger {
+  width: 100%;
+  border-collapse: collapse;
+}
+.ledger th {
+  text-align: left;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--color-line);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  color: var(--color-faded);
+}
+.ledger td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--color-line-soft);
+  white-space: nowrap;
+}
+.ledger tbody tr:hover {
+  background: #F5F1EA;
+}
+
+/* Cinematic display utility — About hero only */
+.display {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* thin scrollbars inside panes */
+.scroll-slim::-webkit-scrollbar { width: 8px; height: 8px; }
+.scroll-slim::-webkit-scrollbar-thumb { background: var(--color-line); border-radius: 4px; }
+
+/* About hero entrance — single orchestrated fade/rise on load */
+@keyframes hero-rise {
+  0%   { opacity: 0; transform: translateY(14px); filter: blur(6px); }
+  100% { opacity: 1; transform: translateY(0);    filter: blur(0); }
+}
+.hero-rise { animation: hero-rise 720ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* About hero soft radial glow — restrained caramel, no green */
+.hero-glow {
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(165, 106, 53, 0.20), transparent 55%),
+    radial-gradient(ellipse at 70% 80%, rgba(112, 64, 31, 0.14), transparent 60%);
+}
+
+/* Always-visible keyboard focus ring on every interactive element */
+:focus-visible {
+  outline: 2px solid var(--color-ember);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Selection — single brown accent, no system blue */
+::selection {
+  background: var(--color-ember);
+  color: var(--color-paper);
+}
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .hero-rise { animation: none !important; }
+  * {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+  }
+}
