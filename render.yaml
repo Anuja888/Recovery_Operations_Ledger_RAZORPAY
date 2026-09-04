@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: renew-api
+    runtime: python
+    plan: starter
+    rootDir: .
+    buildCommand: |
+      pip install --no-cache-dir -r requirements.txt && \
+      python -m app.generate_data --n 2000 && \
+      python -m app.train_scorer
+    startCommand: |
+      uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: RENEW_DATA_DIR
+        value: /data
+      - key: RENEW_MODELS_DIR
+        value: /data/models
+      - key: RENEW_CORS_ORIGINS
+        sync: false   # set this in the Render dashboard to your Vercel origin
+      - key: RENEW_LLM_PROVIDER
+        value: mock
+    disk:
+      name: renew-data
+      mountPath: /data
+      sizeGB: 1
+    healthCheckPath: /health
+    autoDeploy: true

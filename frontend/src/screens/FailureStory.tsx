@@ -16,7 +16,7 @@ type Story = {
   before: Side
   after: Side
   narrative: Narrative
-  latest?: Side & { after: Side } & { before: Side } | null
+  latest?: { before: Side; after: Side } | null
 }
 
 function segMetrics(s: SegmentRow) {

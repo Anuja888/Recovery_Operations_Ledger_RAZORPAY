@@ -17,6 +17,7 @@ Outputs: models/scorer.pkl + docs/eval-report.md (real numbers).
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 import joblib
@@ -34,7 +35,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 ROOT = Path(__file__).resolve().parent.parent
-MODEL_PATH = ROOT / "models" / "scorer.pkl"
+MODEL_PATH = Path(os.environ.get("RENEW_MODELS_DIR", str(ROOT / "models"))) / "scorer.pkl"
 REPORT_PATH = ROOT / "docs" / "eval-report.md"
 
 CATEGORICAL = ["failure_class", "payment_method", "merchant_category"]

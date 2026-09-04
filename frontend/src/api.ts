@@ -1,6 +1,12 @@
 /** Thin typed client for the RENEW backend. */
 
-const BASE = '/api'
+// `VITE_API_BASE` is the origin of the deployed FastAPI backend, e.g.
+// "https://renew-api.onrender.com". It MUST NOT end with a slash. The
+// path components (/batches, /failure-story, ...) are appended as-is.
+//
+// In local development leave it unset — the Vite dev server proxies
+// "/api/*" to the FastAPI server and we hit same-origin URLs.
+const BASE = (import.meta.env.VITE_API_BASE ?? '').replace(/\/$/, '') + '/api'
 
 export interface BatchRun {
   id: string

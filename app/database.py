@@ -19,9 +19,17 @@ class Base(DeclarativeBase):
     """Declarative base for all RENEW models."""
 
 
-# Keep everything inside the repo so `generate_data.py` is the only setup step.
-DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+# Allow deployments (Render / Railway / Fly) to point the SQLite file at a
+# persistent disk (e.g. /data on Render). In local dev the default
+# `<repo>/data/` is used, which is what the rest of the scripts assume.
+_default_data_dir = Path(__file__).resolve().parent.parent / "data"
+DATA_DIR = Path(os.environ.get("RENEW_DATA_DIR", str(_default_data_dir)))
 DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+# Same idea for the trained scorer pickle and the failure-story JSON.
+_default_models_dir = Path(__file__).resolve().parent.parent / "models"
+MODELS_DIR = Path(os.environ.get("RENEW_MODELS_DIR", str(_default_models_dir)))
+MODELS_DIR.mkdir(parents=True, exist_ok=True)
 
 DATABASE_URL = os.environ.get(
     "RENEW_DATABASE_URL",

@@ -1,1 +1,1 @@
-{"root":["./src/app.tsx","./src/api.ts","./src/main.tsx","./src/usecountup.ts","./src/screens/batchrunner.tsx","./src/screens/caseexplorer.tsx","./src/screens/dashboard.tsx","./src/screens/failurestory.tsx","./src/screens/policysandbox.tsx"],"version":"5.6.3"}
+{"root":["./src/app.tsx","./src/api.ts","./src/main.tsx","./src/usecountup.ts","./src/vite-env.d.ts","./src/screens/about.tsx","./src/screens/batchrunner.tsx","./src/screens/caseexplorer.tsx","./src/screens/dashboard.tsx","./src/screens/failurestory.tsx","./src/screens/policysandbox.tsx"],"version":"5.6.3"}

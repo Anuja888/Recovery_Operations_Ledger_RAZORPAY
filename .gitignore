@@ -14,4 +14,7 @@ frontend/dist/
 
 # Env / OS
 .env
+.env.*
+frontend/.env
+frontend/.env.*
 .DS_Store

@@ -1,0 +1,28 @@
+# Build stage
+FROM node:20-alpine AS build
+WORKDIR /app/frontend
+COPY frontend/package.json frontend/package-lock.json* ./
+RUN npm install
+COPY frontend/ ./
+# VITE_API_BASE is wired in at build time — set it when building if you have
+# a backend origin; leave empty for a static build that uses the Vite proxy.
+ARG VITE_API_BASE
+ENV VITE_API_BASE=${VITE_API_BASE}
+RUN npm run build
+
+# Runtime stage
+FROM nginx:1.27-alpine
+COPY --from=build /app/frontend/dist /usr/share/nginx/html
+# SPA fallback: any 404 routes to index.html so the React router can take over.
+COPY <<'EOF' /etc/nginx/conf.d/default.conf
+server {
+  listen 80;
+  server_name _;
+  root /usr/share/nginx/html;
+  index index.html;
+  location / {
+    try_files $uri $uri/ /index.html;
+  }
+}
+EOF
+EXPOSE 80

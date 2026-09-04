@@ -11,6 +11,7 @@ model's one-hot feature importances.
 
 from __future__ import annotations
 
+import os
 import threading
 from functools import lru_cache
 from pathlib import Path
@@ -18,7 +19,7 @@ from pathlib import Path
 import joblib
 
 ROOT = Path(__file__).resolve().parent.parent
-MODEL_PATH = ROOT / "models" / "scorer.pkl"
+MODEL_PATH = Path(os.environ.get("RENEW_MODELS_DIR", str(ROOT / "models"))) / "scorer.pkl"
 
 # ground truth must never be fed to the model
 FORBIDDEN_FEATURES = {"true_recoverable", "true_would_recover_without_action"}

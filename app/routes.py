@@ -64,9 +64,10 @@ def post_admin_seed(force: bool = Query(default=False), db: Session = Depends(ge
         }
 
     from pathlib import Path
+    from app.database import MODELS_DIR, DATA_DIR
 
-    model_path = Path(__file__).resolve().parent.parent / "models" / "scorer.pkl"
-    failure_story_path = Path(__file__).resolve().parent.parent / "data" / "failure_demo.json"
+    model_path = MODELS_DIR / "scorer.pkl"
+    failure_story_path = DATA_DIR / "failure_demo.json"
 
     summary: dict[str, Any] = {
         "status": "seeded",
@@ -250,7 +251,9 @@ import json
 import os
 from pathlib import Path
 
-FAILURE_STORY_PATH = Path(__file__).resolve().parent.parent / "data" / "failure_demo.json"
+from app.database import DATA_DIR
+
+FAILURE_STORY_PATH = DATA_DIR / "failure_demo.json"
 SEGMENT_KEY = "class:insufficient_funds|pfc>=3"
 
 
