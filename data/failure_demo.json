@@ -1,7 +1,7 @@
 {
  "canonical": {
   "before": {
-   "batch_id": "0bdad1091668427c863f812fccccc1d1",
+   "batch_id": "0794c94f85b9422fba924ebb0aa79a61",
    "total_cases": 300,
    "total_at_risk_amount": 6294450.0,
    "total_recovered_amount": 64691.0,
@@ -20,7 +20,7 @@
    "recovery_rate": 0.0
   },
   "after": {
-   "batch_id": "67695e446e194eaeb3a62defadb1671b",
+   "batch_id": "b78397c76638432b93887b45d60c9913",
    "total_cases": 300,
    "total_at_risk_amount": 18624450.0,
    "total_recovered_amount": 5528706.0,
@@ -47,7 +47,7 @@
  },
  "latest": {
   "before": {
-   "batch_id": "fc943888486b49789380de23df289de3",
+   "batch_id": "e340165adfed4fd6948cc520b602549a",
    "total_cases": 300,
    "total_at_risk_amount": 648878.24,
    "total_recovered_amount": 236198.78,
@@ -66,7 +66,7 @@
    "recovery_rate": 0.087
   },
   "after": {
-   "batch_id": "061f31e9f8d6431abcd7cc42f550dc7d",
+   "batch_id": "1eec77c5cdec47b6aad8cac7110c79ef",
    "total_cases": 300,
    "total_at_risk_amount": 609294.94,
    "total_recovered_amount": 175135.52,

@@ -28,7 +28,9 @@ export default function App() {
   async function seed() {
     setSeeded(true)
     try {
-      await (await fetch('/api/admin/seed', { method: 'POST' })).json()
+      // `api.seed()` already routes through the configured VITE_API_BASE
+      // so the deployed Vercel frontend hits the real backend, not itself.
+      await api.seed(true)
       window.location.reload()
     } catch (e) {
       setSeeded(false)

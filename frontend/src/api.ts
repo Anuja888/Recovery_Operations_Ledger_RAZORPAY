@@ -115,7 +115,7 @@ export const api = {
   latestBatch: () => get<BatchRun[]>('/batches/latest').then((r) => r[0]).catch(() => undefined),
 
   seed: async (force = false) => {
-    const res = await fetch(`/api/admin/seed?force=${force}`, { method: 'POST' })
+    const res = await fetch(`${BASE}/admin/seed?force=${force}`, { method: 'POST' })
     if (!res.ok) throw new Error(await res.text())
     return res.json()
   },
