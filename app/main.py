@@ -41,16 +41,24 @@ app = FastAPI(
 # to "*" so the demo works out of the box on any host; lock it down in
 # production by setting the env var to the exact Vercel origin, e.g.
 # "https://renew-frontend.vercel.app".
+#
+# Additionally, Vercel preview deployments get a fresh URL per branch/PR
+# (https://<branch>-<project>.vercel.app), so we always also allow any
+# `*.vercel.app` origin. Set RENEW_CORS_ALLOW_VERCEL_PREVIEWS=0 to
+# disable the regex if you need a strict allow-list.
 _default_origins = "*"
 _cors_origins_env = os.environ.get("RENEW_CORS_ORIGINS", _default_origins)
-_cors_origins: list[str] | list[str] = (
+_cors_origins: list[str] = (
     ["*"] if _cors_origins_env.strip() == "*"
     else [o.strip() for o in _cors_origins_env.split(",") if o.strip()]
 )
+_allow_vercel_previews = os.environ.get("RENEW_CORS_ALLOW_VERCEL_PREVIEWS", "1") != "0"
+_cors_origin_regex = r"https://[a-zA-Z0-9-]+\.vercel\.app" if _allow_vercel_previews else None
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_cors_origins,
-    allow_credentials=("*" not in _cors_origins),
+    allow_origin_regex=_cors_origin_regex,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )

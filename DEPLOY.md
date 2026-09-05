@@ -113,3 +113,21 @@ curl -fsS https://renew-api.onrender.com/api/failure-story | head -c 400
 ```
 
 If `/api/failure-story` returns 404, the seed step was skipped or timed out; re-run the `POST /admin/seed?force=true` and check the Render logs.
+
+---
+
+## 6. CORS — the #1 cause of "net::ERR_FAILED" in the browser console
+
+The browser blocks cross-origin `fetch` calls unless the backend's CORS headers explicitly allow the frontend's origin. The `app/main.py` middleware is configured to allow:
+
+- any origin listed in the `RENEW_CORS_ORIGINS` env var (comma-separated, e.g. `https://recovery-operations-ledger-razorpay.vercel.app`).
+- any `https://*.vercel.app` URL — this covers Vercel preview deployments (one URL per branch / PR). Disable with `RENEW_CORS_ALLOW_VERCEL_PREVIEWS=0` if you want a strict allow-list.
+- `*` (the default) — open to anything, fine for a demo, set `RENEW_CORS_ORIGINS` to a real origin list for production.
+
+After changing the env var, **restart the Render service** so the new CORS config is loaded.
+
+## 7. Pre-demo checklist (operational risks, not code)
+
+- **Cold start (free / starter Render plan).** If the Render service is on a plan that spins down after idle, the first request to the backend after a quiet period takes 30–50+ seconds to wake up. The frontend's fetch will appear to hang. **Mitigation:** open the Vercel URL yourself 1–2 minutes before any live demo or panel to warm the backend; the page will load normally thereafter.
+- **Persistence.** The Render service has a 1 GB persistent disk mounted at `/data` (declared in `render.yaml`). `renew.db` and `scorer.pkl` survive restarts. If you delete the disk or move to a plan that doesn't allow disks, you'll need to re-seed via `POST /admin/seed?force=true` after every restart.
+- **`VITE_API_BASE_URL` / `VITE_API_BASE` is set in the Vercel project environment, not in the source.** It's a build-time variable, so changing it in the Vercel dashboard only takes effect after a redeploy. The deployed JS bundle should contain the Render origin; if it doesn't, every API call returns a Vercel 404 instead of a backend response.
