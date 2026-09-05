@@ -29,3 +29,13 @@ def db_session():
             db.execute(__import__("sqlalchemy").text(f"DELETE FROM {table}"))
         db.commit()
         db.close()
+
+
+@pytest.fixture
+def isolated_failure_story_path(tmp_path, monkeypatch):
+    """Redirect the failure-story JSON read/write to a per-test file
+    so tests don't pollute the on-disk ``data/failure_demo.json`` (which
+    is the canonical pinned-by-seed file used by the deployed app)."""
+    target = tmp_path / "failure_demo.json"
+    monkeypatch.setattr("app.routes.FAILURE_STORY_PATH", target)
+    return target

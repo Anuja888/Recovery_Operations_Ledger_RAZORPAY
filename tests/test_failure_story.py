@@ -38,15 +38,14 @@ def _make_cases(db, n: int = 600) -> list[str]:
     return ids
 
 
-def test_failure_story_404_when_missing(db_session):
-    if FAILURE_STORY_PATH.exists():
-        FAILURE_STORY_PATH.unlink()
+def test_failure_story_404_when_missing(db_session, isolated_failure_story_path):
+    assert not isolated_failure_story_path.exists()
     with pytest.raises(HTTPException) as exc:
         get_failure_story(db_session)
     assert exc.value.status_code == 404
 
 
-def test_failure_story_rerun_creates_story_and_returns_it(db_session):
+def test_failure_story_rerun_creates_story_and_returns_it(db_session, isolated_failure_story_path):
     """First rerun on a fresh DB pins canonical AND populates latest.
     Subsequent reruns leave canonical pinned and only refresh latest.
     """
@@ -64,10 +63,10 @@ def test_failure_story_rerun_creates_story_and_returns_it(db_session):
     # latest mirrors canonical on the first rerun
     assert resp.latest is not None
     assert resp.latest["before"]["batch"]["total_cases"] == 300
-    assert FAILURE_STORY_PATH.exists()
+    assert isolated_failure_story_path.exists()
 
 
-def test_failure_story_rerun_auto_topups_when_pool_low(db_session):
+def test_failure_story_rerun_auto_topups_when_pool_low(db_session, isolated_failure_story_path):
     """Phase A change: post_failure_story_rerun auto-tops up the 'new' pool
     (via run_batch(300, auto_topup=True)) rather than failing outright when
     there aren't 600 fresh cases available. A 20-case seed should still
@@ -82,7 +81,7 @@ def test_failure_story_rerun_auto_topups_when_pool_low(db_session):
     assert resp.after["batch"]["total_cases"] == 300
 
 
-def test_failure_story_rerun_preserves_canonical_on_second_call(db_session):
+def test_failure_story_rerun_preserves_canonical_on_second_call(db_session, isolated_failure_story_path):
     """Second rerun must NOT change the canonical numbers from the first.
     Only `latest` is updated.
     """

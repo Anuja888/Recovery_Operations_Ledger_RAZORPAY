@@ -73,12 +73,41 @@ app.include_router(router, prefix="/api")
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
-    """Log full traceback server-side and return a clean JSON error body."""
+    """Log full traceback server-side and return a clean JSON error body.
+
+    CORSMiddleware intentionally does NOT add CORS headers to 5xx
+    responses (it treats 5xx as server errors, not CORS preflight
+    misses). On cross-origin requests that means a 500 from a route
+    handler surfaces to the browser as a misleading "blocked by CORS"
+    error rather than a real 500. We re-derive the same
+    ``Access-Control-Allow-Origin`` header here so the browser sees
+    the real status. See https://github.com/encode/starlette/issues/1670
+    for the upstream discussion.
+    """
     logger.error("Unhandled exception on %s\n%s", request.url.path, traceback.format_exc())
-    return JSONResponse(
+    response = JSONResponse(
         status_code=500,
         content={"detail": "Internal server error. Please try again or contact support."},
     )
+    request_origin = request.headers.get("origin", "")
+    allowed = _match_cors_origin(request_origin)
+    if allowed:
+        response.headers["Access-Control-Allow-Origin"] = allowed
+    return response
+
+
+def _match_cors_origin(origin: str) -> str | None:
+    if not origin:
+        return None
+    if "*" in _cors_origins:
+        return "*"
+    if origin in _cors_origins:
+        return origin
+    if _cors_origin_regex:
+        import re
+        if re.match(_cors_origin_regex, origin):
+            return origin
+    return None
 
 
 @app.get("/health")
