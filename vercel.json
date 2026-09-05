@@ -5,6 +5,7 @@
   "installCommand": "echo 'no root install needed'",
   "framework": "vite",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/(.*\\.(?:js|css|svg|png|ico|webmanifest|woff2?))", "destination": "/$1" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }

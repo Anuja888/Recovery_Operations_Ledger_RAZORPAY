@@ -6,7 +6,22 @@
 //
 // In local development leave it unset — the Vite dev server proxies
 // "/api/*" to the FastAPI server and we hit same-origin URLs.
-const BASE = (import.meta.env.VITE_API_BASE ?? '').replace(/\/$/, '') + '/api'
+const _rawBase = (import.meta.env.VITE_API_BASE ?? '').replace(/\/$/, '')
+const BASE = _rawBase ? _rawBase + '/api' : '/api'
+
+// Surface a single, actionable error in the browser console when the
+// production build is missing VITE_API_BASE. Without this, every API
+// call silently returns the Vercel-served index.html (or a 404 after
+// the vercel.json fix), which surfaces as a misleading "Unexpected
+// token '<'" JSON parse error in the UI.
+if (typeof window !== 'undefined' && !_rawBase && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+  // eslint-disable-next-line no-console
+  console.error(
+    '[RENEW] VITE_API_BASE is not set. All API calls will fail. ' +
+    'Set it in your Vercel project environment to the FastAPI backend origin ' +
+    '(e.g. https://renew-api.onrender.com) and redeploy.',
+  )
+}
 
 export interface BatchRun {
   id: string
